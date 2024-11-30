@@ -2,6 +2,8 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <GLFW/glfw3.h>
 
 #include "Shader.h"
@@ -11,19 +13,23 @@
 #include "Texture.h"
 
 // Vertices coordinates
-GLfloat vertices[] = {
-    //     COORDINATES     /        COLORS      /   TexCoord  //
-    -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // Lower left corner
-    -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,  // Upper left corner
-    0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,   // Upper right corner
-    0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f   // Lower right corner
-};
+GLfloat vertices[] =
+    { //     COORDINATES     /        COLORS      /   TexCoord  //
+        -0.5f, 0.0f, 0.5f, 0.83f, 0.70f, 0.44f, 0.0f, 0.0f,
+        -0.5f, 0.0f, -0.5f, 0.83f, 0.70f, 0.44f, 5.0f, 0.0f,
+        0.5f, 0.0f, -0.5f, 0.83f, 0.70f, 0.44f, 0.0f, 0.0f,
+        0.5f, 0.0f, 0.5f, 0.83f, 0.70f, 0.44f, 5.0f, 0.0f,
+        0.0f, 0.8f, 0.0f, 0.92f, 0.86f, 0.76f, 2.5f, 5.0f};
 
 // Indices for vertices order
-GLuint indices[] = {
-    0, 2, 1, // Upper triangle
-    0, 3, 2  // Lower triangle
-};
+GLuint indices[] =
+    {
+        0, 1, 2,
+        0, 2, 3,
+        0, 1, 4,
+        1, 2, 4,
+        2, 3, 4,
+        3, 0, 4};
 
 int main(int argc, char const *argv[])
 {
@@ -41,7 +47,7 @@ int main(int argc, char const *argv[])
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Open a window and create its OpenGL context
-    int width = 1536, height = 1536;
+    const unsigned int width = 1536, height = 1536;
     GLFWwindow *window = glfwCreateWindow(width, height, "3D Earth Heatmap", NULL, NULL);
     if (window == NULL)
     {
@@ -100,8 +106,11 @@ int main(int argc, char const *argv[])
     shaderProgram.Activate();
     glUniform1i(uniTex0ID, 0);
 
-    // Create a uniform for Scale
-    GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+    float rotation = 0.0f;
+    double prevTime = glfwGetTime();
+
+    // Enable Detph testing
+    glEnable(GL_DEPTH_TEST);
 
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -109,16 +118,45 @@ int main(int argc, char const *argv[])
         // Specify the color of the background
         glClearColor(0.0f, 0.5f, 0.8f, 1.0f);
         // Clear the back buffer
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Use the shader program
         shaderProgram.Activate();
-        // Scale the Triangles
-        glUniform1f(uniID, 0.5f);
+
+        // Update rotation of model
+        double currTime = glfwGetTime();
+        if (currTime - prevTime >= 1.0f / 60)
+        {
+            rotation += 0.5f;
+            prevTime = currTime;
+        }
+
+        // Model-View-Projection Matrices
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 proj = glm::mat4(1.0f);
+
+        // Apply rotation to the model
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        // Input model matix to shader
+        int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        // Apply the view transformation
+        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+        // Input view matix to shader
+        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        // Apply the perspective
+        proj = glm::perspective(glm::radians(45.0f), (float)(width / height), 0.1f, 100.0f);
+        // Input projection matix to shader
+        int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
+
+        // Bind the Texture
         tex0.Bind();
         // Bind the VAO
         vao.Bind();
         // Draw the Triangles
-        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
         // Swap buffers
         glfwSwapBuffers(window);
 
