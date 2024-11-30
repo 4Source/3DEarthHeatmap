@@ -33,22 +33,6 @@ if (NOT GLFW_INCLUDE_FOUND)
     set(GLFW_INCLUDE ${glfw_SOURCE_DIR})
 endif()
 
-# find or download glew lib
-find_path(GLEW_INCLUDE glew.h)
-if (NOT GLEW_INCLUDE_FOUND)
-    FetchContent_Declare(
-        glew
-        GIT_REPOSITORY https://github.com/nigels-com/glew
-        GIT_TAG 9fb23c3e61cbd2d581e33ff7d8579b572b38ee26
-    )
-    FetchContent_MakeAvailable(glew)
-    set(GLEW_INCLUDE ${glew_SOURCE_DIR})
-endif()
-
-set(GLEW_SOURCE
-    build/_deps/glew-
-)
-
 # find of download glm lib
 find_path(GLM_INCLUDE glm.hpp)
 if (NOT GLM_INCLUDE_FOUND)
@@ -61,14 +45,21 @@ if (NOT GLM_INCLUDE_FOUND)
     set(GLM_INCLUDE ${glm_SOURCE_DIR})
 endif()
 
+# Compile external dependencies 
+add_subdirectory (external)
 
-include_directories(${STB_INCLUDE} ${GLFW_INCLUDE} ${GLEW_INCLUDE} ${GLM_INCLUDE})
+include_directories(
+    ${STB_INCLUDE} 
+    ${GLFW_INCLUDE} 
+    external/glew-1.13.0/include/ 
+    ${GLM_INCLUDE}
+)
 add_executable(3DEarthHeatmap 
     src/main.cpp
 )
 
 target_link_libraries(3DEarthHeatmap 
     glfw 
-    glew32s  
+    GLEW_1130  
     glm
 )
