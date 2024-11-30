@@ -6,7 +6,7 @@ VertexArrayObject::VertexArrayObject()
     glGenVertexArrays(1, &ID);
 }
 
-void VertexArrayObject::LinkAttrib(VertexBufferObject vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void *offset)
+void VertexArrayObject::LinkAttrib(VertexBufferObject &vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void *offset)
 {
     vbo.Bind();
 

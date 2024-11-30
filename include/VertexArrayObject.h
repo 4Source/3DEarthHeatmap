@@ -12,7 +12,7 @@ public:
     VertexArrayObject();
 
     // Links the Vertex Buffer Object to the Vertex Array Object
-    void LinkAttrib(VertexBufferObject vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
+    void LinkAttrib(VertexBufferObject &vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void *offset);
     // Binds the Vertex Array Object
     void Bind();
     // Unbinds the Vertex Array Object
