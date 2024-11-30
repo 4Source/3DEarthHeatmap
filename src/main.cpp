@@ -15,31 +15,55 @@ GLfloat vertices[] = {
     -0.5f,
     -0.5f * float(sqrt(3)) / 3,
     0.0f,
+    // Color
+    0.8f,
+    0.3f,
+    0.02f,
 
     // Lower right corner
     0.5f,
     -0.5f * float(sqrt(3)) / 3,
     0.0f,
+    // Color
+    0.8f,
+    0.3f,
+    0.02f,
 
     // Upper corner
     0.0f,
     0.5f * float(sqrt(3)) * 2 / 3,
     0.0f,
+    // Color
+    1.0f,
+    0.3f,
+    0.02f,
 
     // Inner left
     -0.5f / 2,
     0.5f * float(sqrt(3)) / 6,
     0.0f,
+    // Color
+    0.9f,
+    0.3f,
+    0.9f,
 
     // Inner right
     0.5f / 2,
     0.5f * float(sqrt(3)) / 6,
     0.0f,
+    // Color
+    0.5f,
+    0.5f,
+    0.8f,
 
     // Inner down
     0.0f,
     -0.5f * float(sqrt(3)) / 3,
     0.0f,
+    // Color
+    0.1f,
+    0.9f,
+    0.1f,
 };
 
 GLuint indices[] = {
@@ -104,7 +128,7 @@ int main(int argc, char const *argv[])
     // Generate the Shader program
     Shader shaderProgram("../shader/SimpleShader.vertexshader", "../shader/SimpleShader.fragmentshader");
 
-    // Generate the Vertex Array Object 
+    // Generate the Vertex Array Object
     VertexArrayObject vao;
     vao.Bind();
 
@@ -113,8 +137,9 @@ int main(int argc, char const *argv[])
     // Generate the Element Buffer Object
     ElementBufferObject ebo(indices, sizeof(indices));
 
-    // Link the VBO to the VAO
-    vao.LinkVertexBufferObject(vbo, 0);
+    // Link the attributes to the VAO
+    vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, 6 * sizeof(float), (void *)0);                   // Vertex position
+    vao.LinkAttrib(vbo, 1, 3, GL_FLOAT, 6 * sizeof(float), (void *)(3 * sizeof(float))); // Vertex color
     // Unbind all to prevent modifying
     vao.Unbind();
     vbo.Unbind();
