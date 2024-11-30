@@ -36,17 +36,52 @@ int main(int argc, char const *argv[])
 
     // Vertices coordinates
     GLfloat vertices[] = {
+        // Lower left corner
         -0.5f,
         -0.5f * float(sqrt(3)) / 3,
         0.0f,
 
+        // Lower right corner
         0.5f,
         -0.5f * float(sqrt(3)) / 3,
         0.0f,
 
+        // Upper corner
         0.0f,
         0.5f * float(sqrt(3)) * 2 / 3,
         0.0f,
+
+        // Inner left
+        -0.5f / 2,
+        0.5f * float(sqrt(3)) / 6,
+        0.0f,
+
+        // Inner right
+        0.5f / 2,
+        0.5f * float(sqrt(3)) / 6,
+        0.0f,
+
+        // Inner down
+        0.0f,
+        -0.5f * float(sqrt(3)) / 3,
+        0.0f,
+    };
+
+    GLuint indices[] = {
+        // Lower left triangle
+        0,
+        3,
+        5,
+
+        // Lower right triangle
+        3,
+        2,
+        4,
+
+        // Upper traiangle
+        5,
+        4,
+        1,
     };
 
     // Open a window and create its OpenGL context
@@ -102,10 +137,11 @@ int main(int argc, char const *argv[])
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    // Generate the Vertex Array Object and the Vertex Buffer Object with only 1 object each
-    GLuint VAO, VBO;
+    // Generate the Vertex Array Object, the Vertex Buffer Object and the Element Buffer Object with only 1 object each
+    GLuint VAO, VBO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
     // Make it to the current Vertex Array Object
     glBindVertexArray(VAO);
@@ -115,6 +151,11 @@ int main(int argc, char const *argv[])
     // Add the vertices to the VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // Bind the EBO specifying it is a GL_ELEMENT_ARRAY_BUFFER
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // Add the indices to the EBO
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     // Configure the Vertex Attribute that OpenGL knows how to read the VBO
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
     // Enable the Vertex Attribute
@@ -123,6 +164,7 @@ int main(int argc, char const *argv[])
     // Bind both to 0 so that don't accidentally modify them
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // Important to unbind after VAO
 
     // Specify the color of the background
     glClearColor(0.0f, 0.5f, 0.8f, 1.0f);
@@ -142,7 +184,7 @@ int main(int argc, char const *argv[])
         // Bind the VAO
         glBindVertexArray(VAO);
         // Draw the Triangles
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
         // Swap buffers
         glfwSwapBuffers(window);
 
@@ -153,6 +195,7 @@ int main(int argc, char const *argv[])
     // Delete the objects
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
 
     glfwDestroyWindow(window);
