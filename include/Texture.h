@@ -13,7 +13,7 @@ public:
     // Constructor that loads and generates the texture
     Texture(const char *texturePath, GLenum texType, GLenum slot, GLenum format, GLenum pixelType);
 
-    void textureUnit(Shader &shader, const char *uniform, GLuint unit);
+    void TextureUnit(Shader &shader, const char *uniform, GLuint unit);
     // Binds the Texture
     void Bind();
     // Unbinds the Texture

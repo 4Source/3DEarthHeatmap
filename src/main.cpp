@@ -11,6 +11,7 @@
 #include "VertexBufferObject.h"
 #include "ElementBufferObject.h"
 #include "Texture.h"
+#include "Camera.h"
 
 // Vertices coordinates
 GLfloat vertices[] =
@@ -95,22 +96,16 @@ int main(int argc, char const *argv[])
     ebo.Unbind();
 
     // Texture
-    Texture tex0("../assets/textures/pop_cat.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-    tex0.textureUnit(shaderProgram, "tex0", 0);
-
-    // Unbind the OpenGL texture object
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    // Create a uniform for texture
-    GLuint uniTex0ID = glGetUniformLocation(shaderProgram.ID, "tex0");
-    shaderProgram.Activate();
-    glUniform1i(uniTex0ID, 0);
-
-    float rotation = 0.0f;
-    double prevTime = glfwGetTime();
+    Texture tex0("../assets/textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    tex0.TextureUnit(shaderProgram, "tex0", 0);
 
     // Enable Detph testing
     glEnable(GL_DEPTH_TEST);
+
+    Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+
+    double prevTime = glfwGetTime();
+    double frameTime = 1.0 / 144;
 
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -119,49 +114,36 @@ int main(int argc, char const *argv[])
         glClearColor(0.0f, 0.5f, 0.8f, 1.0f);
         // Clear the back buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        camera.Inputs(window);
+        camera.updateMatrix(45.0f, 0.1f, 100.0f);
+
         // Use the shader program
         shaderProgram.Activate();
-
-        // Update rotation of model
-        double currTime = glfwGetTime();
-        if (currTime - prevTime >= 1.0f / 60)
-        {
-            rotation += 0.5f;
-            prevTime = currTime;
-        }
-
-        // Model-View-Projection Matrices
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
-        glm::mat4 proj = glm::mat4(1.0f);
-
-        // Apply rotation to the model
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        // Input model matix to shader
-        int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        // Apply the view transformation
-        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-        // Input view matix to shader
-        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        // Apply the perspective
-        proj = glm::perspective(glm::radians(45.0f), (float)(width / height), 0.1f, 100.0f);
-        // Input projection matix to shader
-        int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
-
+        // Export the camMatrix to the Shader
+        camera.Matrix(shaderProgram, "camMatrix");
         // Bind the Texture
         tex0.Bind();
         // Bind the VAO
         vao.Bind();
         // Draw the Triangles
         glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+
         // Swap buffers
         glfwSwapBuffers(window);
 
         // Take care of all GLFW events
         glfwPollEvents();
+
+        double currTime = glfwGetTime();
+        while (currTime - prevTime < frameTime)
+        {
+            currTime = glfwGetTime();
+        }
+        if (currTime - prevTime > frameTime)
+        {
+            prevTime = currTime;
+        }
     }
 
     // Delete the objects

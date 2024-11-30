@@ -28,8 +28,8 @@ Texture::Texture(const char *texturePath, GLenum texType, GLenum slot, GLenum fo
     glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Configure the way the texture repeats
-    glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // Assign the image to the OpenGL texture object
     glTexImage2D(type, 0, GL_RGBA, widthImg, heightImg, 0, format, pixelType, textureBytes);
@@ -43,7 +43,7 @@ Texture::Texture(const char *texturePath, GLenum texType, GLenum slot, GLenum fo
     glBindTexture(texType, 0);
 }
 
-void Texture::textureUnit(Shader &shader, const char *uniform, GLuint unit)
+void Texture::TextureUnit(Shader &shader, const char *uniform, GLuint unit)
 {
     // Gets the location of the uniform
     GLuint texUni = glGetUniformLocation(shader.ID, uniform);

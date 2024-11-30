@@ -61,6 +61,7 @@ add_executable(3DEarthHeatmap
     src/ElementBufferObject.cpp
     src/VertexArrayObject.cpp
     src/Texture.cpp
+    src/Camera.cpp
 )
 
 include_directories(
