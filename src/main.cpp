@@ -8,79 +8,21 @@
 #include "VertexArrayObject.h"
 #include "VertexBufferObject.h"
 #include "ElementBufferObject.h"
+#include "Texture.h"
 
 // Vertices coordinates
 GLfloat vertices[] = {
-    // Lower left corner
-    -0.5f,
-    -0.5f * float(sqrt(3)) / 3,
-    0.0f,
-    // Color
-    0.8f,
-    0.3f,
-    0.02f,
-
-    // Lower right corner
-    0.5f,
-    -0.5f * float(sqrt(3)) / 3,
-    0.0f,
-    // Color
-    0.8f,
-    0.3f,
-    0.02f,
-
-    // Upper corner
-    0.0f,
-    0.5f * float(sqrt(3)) * 2 / 3,
-    0.0f,
-    // Color
-    1.0f,
-    0.3f,
-    0.02f,
-
-    // Inner left
-    -0.5f / 2,
-    0.5f * float(sqrt(3)) / 6,
-    0.0f,
-    // Color
-    0.9f,
-    0.3f,
-    0.9f,
-
-    // Inner right
-    0.5f / 2,
-    0.5f * float(sqrt(3)) / 6,
-    0.0f,
-    // Color
-    0.5f,
-    0.5f,
-    0.8f,
-
-    // Inner down
-    0.0f,
-    -0.5f * float(sqrt(3)) / 3,
-    0.0f,
-    // Color
-    0.1f,
-    0.9f,
-    0.1f,
+    //     COORDINATES     /        COLORS      /   TexCoord  //
+    -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // Lower left corner
+    -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,  // Upper left corner
+    0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,   // Upper right corner
+    0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f   // Lower right corner
 };
 
+// Indices for vertices order
 GLuint indices[] = {
-    // Lower left triangle
-    0,
-    3,
-    5,
-
-    // Lower right triangle
-    3,
-    2,
-    4,
-
-    // Upper traiangle
-    5,
-    4,
-    1,
+    0, 2, 1, // Upper triangle
+    0, 3, 2  // Lower triangle
 };
 
 int main(int argc, char const *argv[])
@@ -138,12 +80,25 @@ int main(int argc, char const *argv[])
     ElementBufferObject ebo(indices, sizeof(indices));
 
     // Link the attributes to the VAO
-    vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, 6 * sizeof(float), (void *)0);                   // Vertex position
-    vao.LinkAttrib(vbo, 1, 3, GL_FLOAT, 6 * sizeof(float), (void *)(3 * sizeof(float))); // Vertex color
+    vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void *)0);                   // Vertex position
+    vao.LinkAttrib(vbo, 1, 3, GL_FLOAT, 8 * sizeof(float), (void *)(3 * sizeof(float))); // Vertex color
+    vao.LinkAttrib(vbo, 2, 2, GL_FLOAT, 8 * sizeof(float), (void *)(6 * sizeof(float))); // Vertex Texture coordinate
     // Unbind all to prevent modifying
     vao.Unbind();
     vbo.Unbind();
     ebo.Unbind();
+
+    // Texture
+    Texture tex0("../assets/textures/pop_cat.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    tex0.textureUnit(shaderProgram, "tex0", 0);
+
+    // Unbind the OpenGL texture object
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Create a uniform for texture
+    GLuint uniTex0ID = glGetUniformLocation(shaderProgram.ID, "tex0");
+    shaderProgram.Activate();
+    glUniform1i(uniTex0ID, 0);
 
     // Create a uniform for Scale
     GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
@@ -159,6 +114,7 @@ int main(int argc, char const *argv[])
         shaderProgram.Activate();
         // Scale the Triangles
         glUniform1f(uniID, 0.5f);
+        tex0.Bind();
         // Bind the VAO
         vao.Bind();
         // Draw the Triangles
@@ -174,6 +130,7 @@ int main(int argc, char const *argv[])
     vao.Delete();
     vbo.Delete();
     ebo.Delete();
+    tex0.Delete();
     shaderProgram.Delete();
 
     glfwDestroyWindow(window);

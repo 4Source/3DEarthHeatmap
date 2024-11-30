@@ -60,6 +60,7 @@ add_executable(3DEarthHeatmap
     src/VertexBufferObject.cpp
     src/ElementBufferObject.cpp
     src/VertexArrayObject.cpp
+    src/Texture.cpp
 )
 
 include_directories(
