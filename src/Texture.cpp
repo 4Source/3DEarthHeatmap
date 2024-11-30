@@ -3,7 +3,7 @@
 
 #include "Texture.h"
 
-Texture::Texture(const char *texturePath, GLenum texType, GLenum slot, GLenum format, GLenum pixelType)
+Texture::Texture(const char *texturePath, GLenum texType, GLuint slot, GLenum format, GLenum pixelType)
 {
     type = texType;
     int widthImg, heightImg, numColCh;
@@ -20,7 +20,8 @@ Texture::Texture(const char *texturePath, GLenum texType, GLenum slot, GLenum fo
     // Generate OpenGL texture object
     glGenTextures(1, &ID); // number of textures, pointer to texture objects
     // Assign the texture to a texture unit
-    glActiveTexture(slot);
+    glActiveTexture(GL_TEXTURE0 + slot);
+    unit = slot;
     glBindTexture(type, ID);
 
     // Configure the type of algorithm that is used to make the image smaller or bigger
@@ -55,6 +56,7 @@ void Texture::TextureUnit(Shader &shader, const char *uniform, GLuint unit)
 
 void Texture::Bind()
 {
+    glActiveTexture(GL_TEXTURE0 + unit);
     // Bind the OpenGL texture object
     glBindTexture(type, ID);
 }
