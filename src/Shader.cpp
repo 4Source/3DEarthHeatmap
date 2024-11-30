@@ -31,6 +31,7 @@ Shader::Shader(const char *vertexFile, const char *fragmentFile)
     glShaderSource(vertexShader, 1, &vertexSource, NULL);
     // Compile the vertex shader
     glCompileShader(vertexShader);
+    compileErrors(vertexShader, "VERTEX");
 
     // Create a Fragment Shader Object
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -38,6 +39,7 @@ Shader::Shader(const char *vertexFile, const char *fragmentFile)
     glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
     // Compile the fragment shader
     glCompileShader(fragmentShader);
+    compileErrors(fragmentShader, "FRAGMENT");
 
     // Create Shader Program Object
     ID = glCreateProgram();
@@ -46,6 +48,7 @@ Shader::Shader(const char *vertexFile, const char *fragmentFile)
     glAttachShader(ID, fragmentShader);
     // Link all the shaders together into the Shader Program
     glLinkProgram(ID);
+    compileErrors(ID, "PROGRAM");
 
     // Delete the Vertex and Fragment Shader object because there are allready in the Shader Program
     glDeleteShader(vertexShader);
@@ -60,4 +63,33 @@ void Shader::Activate()
 void Shader::Delete()
 {
     glDeleteProgram(ID);
+}
+
+void Shader::compileErrors(unsigned int shader, const char *type)
+{
+    GLint hasCompiled;
+    char infoLog[1024];
+    if(type != "PROGRAM")
+    {
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
+        if(hasCompiled == GL_FALSE)
+        {
+            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+            
+            std::cout << "\033[" << 91 << "m" << "SHADER_COMPILATION_ERROR for: " << type << "\033[0m" << std::endl;
+        }
+        else {
+            std::cout << "Shader successfully compiled: " << type << std::endl;
+        }
+    }
+    else {
+        glGetProgramiv(shader, GL_LINK_STATUS, &hasCompiled);
+        if(hasCompiled == GL_FALSE) {
+            glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+            std::cout << "\033[" << 91 << "m" << "SHADER_LINKING_ERROR \033[0m" << std::endl;
+        }
+        else {
+            std::cout << "Shader successfully linked" << std::endl;
+        }
+    }
 }

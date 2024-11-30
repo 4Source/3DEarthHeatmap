@@ -20,4 +20,6 @@ public:
     void Activate();
     // Deletes the Shader Program
     void Delete();
+    // Check for Shader Compile errors and print them 
+    void compileErrors(unsigned int shader, const char* type);
 };
