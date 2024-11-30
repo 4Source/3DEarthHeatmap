@@ -56,6 +56,14 @@ include_directories(
 )
 add_executable(3DEarthHeatmap 
     src/main.cpp
+    src/Shader.cpp
+    src/VertexBufferObject.cpp
+    src/ElementBufferObject.cpp
+    src/VertexArrayObject.cpp
+)
+
+include_directories(
+    ./include/
 )
 
 target_link_libraries(3DEarthHeatmap 
