@@ -145,6 +145,9 @@ int main(int argc, char const *argv[])
     vbo.Unbind();
     ebo.Unbind();
 
+    // Create a uniform for Scale
+    GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
@@ -154,6 +157,8 @@ int main(int argc, char const *argv[])
         glClear(GL_COLOR_BUFFER_BIT);
         // Use the shader program
         shaderProgram.Activate();
+        // Scale the Triangles
+        glUniform1f(uniID, 0.5f);
         // Bind the VAO
         vao.Bind();
         // Draw the Triangles
