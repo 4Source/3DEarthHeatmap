@@ -14,7 +14,7 @@ Texture::Texture(const char *texturePath, const char *texType, GLuint slot)
     unsigned char *textureBytes = stbi_load(texturePath, &widthImg, &heightImg, &numColCh, 0);
     if (!textureBytes)
     {
-        std::cout << "\033[" << 91 << "m" << "Failed to load image: " << texturePath << "\033[0m" << "\n";
+        throw std::invalid_argument("Failed to load image: " + std::string(texturePath));
     }
 
     // Generate OpenGL texture object

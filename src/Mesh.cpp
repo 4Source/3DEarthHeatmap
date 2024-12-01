@@ -36,7 +36,7 @@ void Mesh::Draw(Shader &shader, Camera &camera, glm::mat4 matrix, glm::vec3 tran
     unsigned int numDiffuse = 0;
     unsigned int numSpecular = 0;
 
-    // Check the type of texture and
+    // Check the type of texture
     for (unsigned int i = 0; i < textures.size(); i++)
     {
         std::string num;
@@ -52,8 +52,7 @@ void Mesh::Draw(Shader &shader, Camera &camera, glm::mat4 matrix, glm::vec3 tran
         }
         else
         {
-            std::cout << "\033[" << 91 << "m" << "Unknown type of Texture: " << type << "\033[0m" << std::endl;
-            continue;
+            throw std::invalid_argument("Unknown type of Texture: " + type);
         }
         textures[i].TextureUnit(shader, (type + num).c_str(), i);
         textures[i].Bind();
