@@ -11,6 +11,7 @@ find_package(OpenGL REQUIRED)
 
 # find or download stb image lib 
 find_path(STB_INCLUDE stb_image.h)
+message(STB_INCLUDE="${STB_INCLUDE}")
 if (NOT STB_INCLUDE_FOUND)
     FetchContent_Declare(
         stb
@@ -19,10 +20,12 @@ if (NOT STB_INCLUDE_FOUND)
     )
     FetchContent_MakeAvailable(stb)
     set(STB_INCLUDE ${stb_SOURCE_DIR})
+    message(STB_INCLUDE="${STB_INCLUDE}")
 endif()
 
 # find or download glfw lib
 find_path(GLFW_INCLUDE glfw3.h)
+message(GLFW_INCLUDE="${GLFW_INCLUDE}")
 if (NOT GLFW_INCLUDE_FOUND)
     FetchContent_Declare(
         glfw
@@ -31,10 +34,12 @@ if (NOT GLFW_INCLUDE_FOUND)
     )
     FetchContent_MakeAvailable(glfw)
     set(GLFW_INCLUDE ${glfw_SOURCE_DIR})
+    message(GLFW_INCLUDE="${GLFW_INCLUDE}")
 endif()
 
-# find of download glm lib
+# find or download glm lib
 find_path(GLM_INCLUDE glm.hpp)
+message(GLM_INCLUDE="${GLM_INCLUDE}")
 if (NOT GLM_INCLUDE_FOUND)
     FetchContent_Declare(
         glm
@@ -43,19 +48,38 @@ if (NOT GLM_INCLUDE_FOUND)
     )
     FetchContent_MakeAvailable(glm)
     set(GLM_INCLUDE ${glm_SOURCE_DIR})
+    message(GLM_INCLUDE="${GLM_INCLUDE}")
 endif()
+
+# find or download json lib
+find_path(JSON_INCLUDE json.hpp) 
+message(JSON_INCLUDE="${JSON_INCLUDE}")
+if (NOT JSON_INCLUDE_FOUND)
+    FetchContent_Declare(
+        json
+        GIT_REPOSITORY https://github.com/nlohmann/json
+        GIT_TAG v3.9.1
+    )
+    FetchContent_MakeAvailable(json)
+    set(JSON_INCLUDE ${json_SOURCE_DIR})
+    message(JSON_INCLUDE="${JSON_INCLUDE}")
+endif()
+
 
 # Compile external dependencies 
 add_subdirectory (external)
 
 include_directories(
+    ./include/
     ${STB_INCLUDE} 
-    ${GLFW_INCLUDE} 
-    external/glew-1.13.0/include/ 
-    ${GLM_INCLUDE}
+    ${GLFW_INCLUDE}/include
+    external/glew-1.13.0/include
+    ${GLM_INCLUDE}/glm
+    ${JSON_INCLUDE}
 )
 add_executable(3DEarthHeatmap 
     src/main.cpp
+    src/utils.cpp
     src/Shader.cpp
     src/VertexBufferObject.cpp
     src/ElementBufferObject.cpp
@@ -63,14 +87,12 @@ add_executable(3DEarthHeatmap
     src/Texture.cpp
     src/Camera.cpp
     src/Mesh.cpp
+    src/Model.cpp
 )
 
-include_directories(
-    ./include/
-)
-
-target_link_libraries(3DEarthHeatmap 
+target_link_libraries(3DEarthHeatmap PRIVATE
     glfw 
     GLEW_1130  
     glm
+    nlohmann_json::nlohmann_json
 )

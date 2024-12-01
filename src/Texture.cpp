@@ -3,7 +3,7 @@
 
 #include "Texture.h"
 
-Texture::Texture(const char *texturePath, const char *texType, GLuint slot, GLenum format, GLenum pixelType)
+Texture::Texture(const char *texturePath, const char *texType, GLuint slot)
 {
     type = texType;
     int widthImg, heightImg, numColCh;
@@ -33,7 +33,23 @@ Texture::Texture(const char *texturePath, const char *texType, GLuint slot, GLen
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // Assign the image to the OpenGL texture object
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, format, pixelType, textureBytes);
+    if (numColCh == 4)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureBytes);
+    }
+    else if (numColCh == 3)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, textureBytes);
+    }
+    else if (numColCh == 1)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RED, GL_UNSIGNED_BYTE, textureBytes);
+    }
+    else
+    {
+        throw std::invalid_argument("Automatic Texture type recognition failed!");
+    }
+
     // Generate Mipmap
     glGenerateMipmap(GL_TEXTURE_2D);
 
