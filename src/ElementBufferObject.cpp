@@ -1,6 +1,6 @@
 #include "ElementBufferObject.h"
 
-ElementBufferObject::ElementBufferObject(GLuint *indices, GLsizeiptr size)
+ElementBufferObject::ElementBufferObject(std::vector<GLuint> &indices)
 {
     // Generate the Element Buffer Object with only 1 object
     glGenBuffers(1, &ID);
@@ -8,7 +8,7 @@ ElementBufferObject::ElementBufferObject(GLuint *indices, GLsizeiptr size)
     // Bind the EBO specifying it is a GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
     // Add the indices to the EBO
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 }
 
 void ElementBufferObject::Bind()

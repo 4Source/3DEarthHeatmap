@@ -1,42 +1,14 @@
 #include <iostream>
-#define GLEW_STATIC
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <GLFW/glfw3.h>
 
-#include "Shader.h"
-#include "VertexArrayObject.h"
-#include "VertexBufferObject.h"
-#include "ElementBufferObject.h"
-#include "Texture.h"
-#include "Camera.h"
+#include "Mesh.h"
 
 // Vertices coordinates
-GLfloat vertices[] = {
-    //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
-    -0.5f, 0.0f, 0.5f, 0.83f, 0.70f, 0.44f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,  // Bottom side
-    -0.5f, 0.0f, -0.5f, 0.83f, 0.70f, 0.44f, 0.0f, 5.0f, 0.0f, -1.0f, 0.0f, // Bottom side
-    0.5f, 0.0f, -0.5f, 0.83f, 0.70f, 0.44f, 5.0f, 5.0f, 0.0f, -1.0f, 0.0f,  // Bottom side
-    0.5f, 0.0f, 0.5f, 0.83f, 0.70f, 0.44f, 5.0f, 0.0f, 0.0f, -1.0f, 0.0f,   // Bottom side
-
-    -0.5f, 0.0f, 0.5f, 0.83f, 0.70f, 0.44f, 0.0f, 0.0f, -0.8f, 0.5f, 0.0f,  // Left Side
-    -0.5f, 0.0f, -0.5f, 0.83f, 0.70f, 0.44f, 5.0f, 0.0f, -0.8f, 0.5f, 0.0f, // Left Side
-    0.0f, 0.8f, 0.0f, 0.92f, 0.86f, 0.76f, 2.5f, 5.0f, -0.8f, 0.5f, 0.0f,   // Left Side
-
-    -0.5f, 0.0f, -0.5f, 0.83f, 0.70f, 0.44f, 5.0f, 0.0f, 0.0f, 0.5f, -0.8f, // Non-facing side
-    0.5f, 0.0f, -0.5f, 0.83f, 0.70f, 0.44f, 0.0f, 0.0f, 0.0f, 0.5f, -0.8f,  // Non-facing side
-    0.0f, 0.8f, 0.0f, 0.92f, 0.86f, 0.76f, 2.5f, 5.0f, 0.0f, 0.5f, -0.8f,   // Non-facing side
-
-    0.5f, 0.0f, -0.5f, 0.83f, 0.70f, 0.44f, 0.0f, 0.0f, 0.8f, 0.5f, 0.0f, // Right side
-    0.5f, 0.0f, 0.5f, 0.83f, 0.70f, 0.44f, 5.0f, 0.0f, 0.8f, 0.5f, 0.0f,  // Right side
-    0.0f, 0.8f, 0.0f, 0.92f, 0.86f, 0.76f, 2.5f, 5.0f, 0.8f, 0.5f, 0.0f,  // Right side
-
-    0.5f, 0.0f, 0.5f, 0.83f, 0.70f, 0.44f, 5.0f, 0.0f, 0.0f, 0.5f, 0.8f,  // Facing side
-    -0.5f, 0.0f, 0.5f, 0.83f, 0.70f, 0.44f, 0.0f, 0.0f, 0.0f, 0.5f, 0.8f, // Facing side
-    0.0f, 0.8f, 0.0f, 0.92f, 0.86f, 0.76f, 2.5f, 5.0f, 0.0f, 0.5f, 0.8f   // Facing side
-};
+Vertex vertices[] = {
+    //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
+    Vertex{glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+    Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+    Vertex{glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+    Vertex{glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}};
 
 // Indices for vertices order
 GLuint indices[] = {
@@ -48,16 +20,16 @@ GLuint indices[] = {
     13, 15, 14  // Facing side
 };
 
-GLfloat lightVertices[] = {
+Vertex lightVertices[] = {
     //     COORDINATES     //
-    -0.1f, -0.1f, 0.1f,
-    -0.1f, -0.1f, -0.1f,
-    0.1f, -0.1f, -0.1f,
-    0.1f, -0.1f, 0.1f,
-    -0.1f, 0.1f, 0.1f,
-    -0.1f, 0.1f, -0.1f,
-    0.1f, 0.1f, -0.1f,
-    0.1f, 0.1f, 0.1f};
+    Vertex{glm::vec3(-0.1f, -0.1f, 0.1f)},
+    Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
+    Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
+    Vertex{glm::vec3(0.1f, -0.1f, 0.1f)},
+    Vertex{glm::vec3(-0.1f, 0.1f, 0.1f)},
+    Vertex{glm::vec3(-0.1f, 0.1f, -0.1f)},
+    Vertex{glm::vec3(0.1f, 0.1f, -0.1f)},
+    Vertex{glm::vec3(0.1f, 0.1f, 0.1f)}};
 
 GLuint lightIndices[] = {
     0, 1, 2,
@@ -115,43 +87,24 @@ int main(int argc, char const *argv[])
     // Set the viewport to the full window
     glViewport(0, 0, width, height);
 
+    Texture textures[]
+    {
+        Texture("../assets/textures/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
+        Texture("../assets/textures/planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE),
+    };
+
     // Generate the Shader program
     Shader shaderProgram("../shader/SimpleShader.vertexshader", "../shader/SimpleShader.fragmentshader");
-
-    // Generate the Vertex Array Object
-    VertexArrayObject vao;
-    vao.Bind();
-
-    // Generate the Vertex Buffer Object
-    VertexBufferObject vbo(vertices, sizeof(vertices));
-    // Generate the Element Buffer Object
-    ElementBufferObject ebo(indices, sizeof(indices));
-
-    // Link the attributes to the VAO
-    vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, 11 * sizeof(float), (void *)0);                   // Vertex position
-    vao.LinkAttrib(vbo, 1, 3, GL_FLOAT, 11 * sizeof(float), (void *)(3 * sizeof(float))); // Vertex color
-    vao.LinkAttrib(vbo, 2, 2, GL_FLOAT, 11 * sizeof(float), (void *)(6 * sizeof(float))); // Vertex Texture coordinate
-    vao.LinkAttrib(vbo, 3, 3, GL_FLOAT, 11 * sizeof(float), (void *)(8 * sizeof(float))); // Face Normals
-    // Unbind all to prevent modifying
-    vao.Unbind();
-    vbo.Unbind();
-    ebo.Unbind();
+    std::vector<Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
+    std::vector<GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+    std::vector<Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+    Mesh floor(verts, ind, tex);
 
     // Shader for light cube
     Shader lightShader("../shader/LightShader.vertexshader", "../shader/LightShader.fragmentshader");
-    // Generates Vertex Array Object and binds it
-    VertexArrayObject lightVAO;
-    lightVAO.Bind();
-    // Generates Vertex Buffer Object and links it to vertices
-    VertexBufferObject lightVBO(lightVertices, sizeof(lightVertices));
-    // Generates Element Buffer Object and links it to indices
-    ElementBufferObject lightEBO(lightIndices, sizeof(lightIndices));
-    // Links VBO attributes such as coordinates and colors to VAO
-    lightVAO.LinkAttrib(lightVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void *)0);
-    // Unbind all to prevent accidentally modifying them
-    lightVAO.Unbind();
-    lightVBO.Unbind();
-    lightEBO.Unbind();
+    std::vector<Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
+    std::vector<GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
+    Mesh light(lightVerts, lightInd, tex);
 
     glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -170,13 +123,10 @@ int main(int argc, char const *argv[])
     glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
     glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-    // Texture
-    Texture tex0("../assets/textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-    tex0.TextureUnit(shaderProgram, "tex0", 0);
-
     // Enable Detph testing
     glEnable(GL_DEPTH_TEST);
 
+    // Create camera
     Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
     double prevTime = glfwGetTime();
@@ -190,29 +140,14 @@ int main(int argc, char const *argv[])
         // Clear the back buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Handle camera inputs
         camera.Inputs(window);
+        // Update camera matrix
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-        // Use the shader program
-        shaderProgram.Activate();
-        glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.position.x, camera.position.y, camera.position.z);
-        // Export the camMatrix to the Shader
-        camera.Matrix(shaderProgram, "camMatrix");
-        // Bind the Texture
-        tex0.Bind();
-        // Bind the VAO
-        vao.Bind();
-        // Draw the Triangles
-        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-        // Use the shader program
-        lightShader.Activate();
-        // Export the camMatrix to the Shader
-        camera.Matrix(lightShader, "camMatrix");
-        // Bind the VAO
-        lightVAO.Bind();
-        // Draw primitives, number of indices, datatype of indices, index of indices
-        glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
+        // Draw objects
+        floor.Draw(shaderProgram, camera);
+        light.Draw(lightShader, camera);
 
         // Swap buffers
         glfwSwapBuffers(window);
@@ -220,6 +155,7 @@ int main(int argc, char const *argv[])
         // Take care of all GLFW events
         glfwPollEvents();
 
+        // Constant frame time
         double currTime = glfwGetTime();
         while (currTime - prevTime < frameTime)
         {
@@ -232,14 +168,7 @@ int main(int argc, char const *argv[])
     }
 
     // Delete the objects
-    vao.Delete();
-    vbo.Delete();
-    ebo.Delete();
-    tex0.Delete();
     shaderProgram.Delete();
-    lightVAO.Delete();
-    lightVBO.Delete();
-    lightEBO.Delete();
     lightShader.Delete();
 
     glfwDestroyWindow(window);

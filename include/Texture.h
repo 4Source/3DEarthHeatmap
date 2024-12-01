@@ -9,10 +9,10 @@ class Texture
 {
 public:
     GLuint ID;
-    GLenum type;
+    const char* type;
     GLuint unit;
     // Constructor that loads and generates the texture
-    Texture(const char *texturePath, GLenum texType, GLuint slot, GLenum format, GLenum pixelType);
+    Texture(const char *texturePath, const char* texType, GLuint slot, GLenum format, GLenum pixelType);
 
     void TextureUnit(Shader &shader, const char *uniform, GLuint unit);
     // Binds the Texture

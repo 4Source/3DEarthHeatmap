@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #define GLEW_STATIC
 #include <GL/glew.h>
 
@@ -8,7 +9,7 @@ class ElementBufferObject
 public:
     GLuint ID;
     // Constructor that generates the Element Buffer Object
-    ElementBufferObject(GLuint *indices, GLsizeiptr size);
+    ElementBufferObject(std::vector<GLuint>& indices);
 
     // Binds the Element Buffer Object
     void Bind();

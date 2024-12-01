@@ -3,7 +3,7 @@
 
 #include "Texture.h"
 
-Texture::Texture(const char *texturePath, GLenum texType, GLuint slot, GLenum format, GLenum pixelType)
+Texture::Texture(const char *texturePath, const char *texType, GLuint slot, GLenum format, GLenum pixelType)
 {
     type = texType;
     int widthImg, heightImg, numColCh;
@@ -22,26 +22,26 @@ Texture::Texture(const char *texturePath, GLenum texType, GLuint slot, GLenum fo
     // Assign the texture to a texture unit
     glActiveTexture(GL_TEXTURE0 + slot);
     unit = slot;
-    glBindTexture(type, ID);
+    glBindTexture(GL_TEXTURE_2D, ID);
 
     // Configure the type of algorithm that is used to make the image smaller or bigger
-    glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Configure the way the texture repeats
-    glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // Assign the image to the OpenGL texture object
-    glTexImage2D(type, 0, GL_RGBA, widthImg, heightImg, 0, format, pixelType, textureBytes);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, format, pixelType, textureBytes);
     // Generate Mipmap
-    glGenerateMipmap(type);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     // Delete the image data
     stbi_image_free(textureBytes);
 
     // Unbind the OpenGL texture object
-    glBindTexture(texType, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture::TextureUnit(Shader &shader, const char *uniform, GLuint unit)
@@ -58,13 +58,13 @@ void Texture::Bind()
 {
     glActiveTexture(GL_TEXTURE0 + unit);
     // Bind the OpenGL texture object
-    glBindTexture(type, ID);
+    glBindTexture(GL_TEXTURE_2D, ID);
 }
 
 void Texture::Unbind()
 {
     // Unbind the OpenGL texture object
-    glBindTexture(type, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture::Delete()
