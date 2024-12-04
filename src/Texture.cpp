@@ -41,6 +41,10 @@ Texture::Texture(const char *texturePath, const char *texType, GLuint slot)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, textureBytes);
     }
+    else if (numColCh == 2)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RG, GL_UNSIGNED_BYTE, textureBytes);
+    }
     else if (numColCh == 1)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RED, GL_UNSIGNED_BYTE, textureBytes);

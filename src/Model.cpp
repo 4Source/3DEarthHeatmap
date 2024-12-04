@@ -211,7 +211,7 @@ std::vector<GLuint> Model::getIndices(json accessor)
 
     // Get the properties of the bufferView
     json bufferView = jsonObj["bufferViews"][buffViewIndices];
-    unsigned int byteOffset = bufferView["byteOffset"];
+    unsigned int byteOffset = bufferView.value("byteOffset", 0);
 
     // Get indices regards to their type:
     // unsigned int

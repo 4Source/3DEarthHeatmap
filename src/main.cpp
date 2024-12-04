@@ -32,7 +32,7 @@ int main(int argc, char const *argv[])
         Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
         // Load model from file
-        Model model("../assets/models/sword/scene.gltf");
+        Model model("../assets/models/planet_earth/scene.gltf");
 
         double prevTime = glfwGetTime();
         double frameTime = 1.0 / 144;
