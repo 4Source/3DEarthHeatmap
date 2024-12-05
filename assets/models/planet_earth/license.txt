@@ -1,11 +1,11 @@
 Model Information:
-* title:	Planet Earth
-* source:	https://sketchfab.com/3d-models/planet-earth-fa0665fff0b045f3bf2d447fa66d37e4
-* author:	makarpronin90 (https://sketchfab.com/makarpronin90)
+* title:	Planet Earth Height Model
+* source:	https://github.com/4Source/3DEarthHeatmap/tree/master/assets/models/planet_earth
+* author:	4Source (https://github.com/4Source)
 
 Model License:
 * license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 * requirements:	Author must be credited. Commercial use is allowed.
 
-If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
 This work is based on "Planet Earth" (https://sketchfab.com/3d-models/planet-earth-fa0665fff0b045f3bf2d447fa66d37e4) by makarpronin90 (https://sketchfab.com/makarpronin90) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
