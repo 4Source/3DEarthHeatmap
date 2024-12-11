@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "Shader.h"
-#include "FreeCamera.h"
+#include "OrbitalCamera.h"
 #include "Model.h"
 
 GLFWwindow *window;
@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
         glEnable(GL_DEPTH_TEST);
 
         // Create camera
-        FreeCamera camera(width, height, glm::vec3(0.0f, 0.0f, 5.0f));
+        OrbitalCamera camera(width, height, glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
         // Load model from file
         Model model("../assets/models/planet_earth/scene.gltf");

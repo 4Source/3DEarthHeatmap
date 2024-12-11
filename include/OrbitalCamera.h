@@ -2,19 +2,20 @@
 
 #include "Camera.h"
 
-class FreeCamera : public Camera
+class OrbitalCamera : public Camera
 {
 protected:
-    glm::vec3 mOrientation = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 mUpVec = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 mTargetPosition;
+    glm::vec3 mUpVec;
+    glm::vec3 mRightVec;
 
     int mWidth, mHeight;
 
     float mSpeed = 0.1f;
-    float mSensitivity = 50.0f;
+    float mSensitivity = 30.0f;
 
 public:
-    FreeCamera(int width, int height, glm::vec3 position);
+    OrbitalCamera(int width, int height, glm::vec3 position, glm::vec3 targetPosition);
 
     virtual void updateMatrix(float FOVdeg, float nearPlane, float farPlane) override;
     virtual void handleInputs(GLFWwindow *window) override;

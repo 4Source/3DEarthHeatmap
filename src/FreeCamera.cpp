@@ -11,7 +11,7 @@ void FreeCamera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 proj = glm::mat4(1.0f);
 
-    view = glm::lookAt(mPosition, mPosition + mOrientation, mUp);
+    view = glm::lookAt(mPosition, mPosition + mOrientation, mUpVec);
 
     // Apply the perspective
     proj = glm::perspective(glm::radians(FOVdeg), (float)(mWidth / mHeight), nearPlane, farPlane);
@@ -21,30 +21,31 @@ void FreeCamera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
 
 void FreeCamera::handleInputs(GLFWwindow *window)
 {
+    float delta = mSpeed / mSensitivity;
     // Handles key inputs
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        mPosition += (mSpeed / mSensitivity) * mOrientation;
+        mPosition += delta * mOrientation;
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        mPosition += (mSpeed / mSensitivity) * -glm::normalize(glm::cross(mOrientation, mUp));
+        mPosition += delta * -glm::normalize(glm::cross(mOrientation, mUpVec));
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        mPosition += (mSpeed / mSensitivity) * -mOrientation;
+        mPosition += delta * -mOrientation;
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        mPosition += (mSpeed / mSensitivity) * glm::normalize(glm::cross(mOrientation, mUp));
+        mPosition += delta * glm::normalize(glm::cross(mOrientation, mUpVec));
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
-        mPosition += (mSpeed / mSensitivity) * mUp;
+        mPosition += delta * mUpVec;
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
-        mPosition += (mSpeed / mSensitivity) * -mUp;
+        mPosition += delta * -mUpVec;
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
