@@ -9,15 +9,19 @@
 
 class Shader
 {
+private:
+    GLuint mId;
+
 public:
-    GLuint ID;
     // Contructor that build the Shaders from file
     Shader(const char *vertexFile, const char *fragmentFile);
 
+    const GLuint getId() const;
+
     // Activates the Shader Program
-    void Activate();
-    // Deletes the Shader Program
-    void Delete();
+    void activateShader();
     // Check for Shader Compile errors and print them
-    void CompileErrors(unsigned int shader, const char *type);
+    void printCompileErrors(unsigned int shader, const char *type);
+    // Deletes the Shader Program
+    void deleteShader();
 };

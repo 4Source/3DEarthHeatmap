@@ -7,18 +7,18 @@
 class VertexArrayObject
 {
 protected:
-    GLuint ID;
+    GLuint mId;
 
 public:
     // Constructor that generates the Vertex Array Object
     VertexArrayObject();
 
     // Links the Vertex Buffer Object to the Vertex Array Object
-    void LinkAttrib(VertexBufferObject &vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void *offset);
+    void linkAttrib(VertexBufferObject &vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void *offset);
     // Binds the Vertex Array Object
-    void Bind();
+    void bindArray();
     // Unbinds the Vertex Array Object
-    void Unbind();
+    void unbindArray();
     // Deletes the Vertex Array Object
-    void Delete();
+    void deleteArray();
 };

@@ -3,8 +3,8 @@
 Shader::Shader(const char *vertexFile, const char *fragmentFile)
 {
     std::cout << "Loading Shaders from: \n \t" << vertexFile << "\n \t" << fragmentFile << "\n";
-    std::string vertexCode = get_file_contents(vertexFile);
-    std::string fragmentCode = get_file_contents(fragmentFile);
+    std::string vertexCode = getFileContents(vertexFile);
+    std::string fragmentCode = getFileContents(fragmentFile);
 
     const char *vertexSource = vertexCode.c_str();
     const char *fragmentSource = fragmentCode.c_str();
@@ -15,7 +15,7 @@ Shader::Shader(const char *vertexFile, const char *fragmentFile)
     glShaderSource(vertexShader, 1, &vertexSource, NULL);
     // Compile the vertex shader
     glCompileShader(vertexShader);
-    CompileErrors(vertexShader, "VERTEX");
+    printCompileErrors(vertexShader, "VERTEX");
 
     // Create a Fragment Shader Object
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -23,33 +23,33 @@ Shader::Shader(const char *vertexFile, const char *fragmentFile)
     glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
     // Compile the fragment shader
     glCompileShader(fragmentShader);
-    CompileErrors(fragmentShader, "FRAGMENT");
+    printCompileErrors(fragmentShader, "FRAGMENT");
 
     // Create Shader Program Object
-    ID = glCreateProgram();
+    mId = glCreateProgram();
     // Attach the Vertex and Fragment Shaders to the Shader Program
-    glAttachShader(ID, vertexShader);
-    glAttachShader(ID, fragmentShader);
+    glAttachShader(mId, vertexShader);
+    glAttachShader(mId, fragmentShader);
     // Link all the shaders together into the Shader Program
-    glLinkProgram(ID);
-    CompileErrors(ID, "PROGRAM");
+    glLinkProgram(mId);
+    printCompileErrors(mId, "PROGRAM");
 
     // Delete the Vertex and Fragment Shader object because there are allready in the Shader Program
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }
 
-void Shader::Activate()
+const GLuint Shader::getId() const
 {
-    glUseProgram(ID);
+    return mId;
 }
 
-void Shader::Delete()
+void Shader::activateShader()
 {
-    glDeleteProgram(ID);
+    glUseProgram(mId);
 }
 
-void Shader::CompileErrors(unsigned int shader, const char *type)
+void Shader::printCompileErrors(unsigned int shader, const char *type)
 {
     GLint hasCompiled;
     char infoLog[1024];
@@ -80,4 +80,9 @@ void Shader::CompileErrors(unsigned int shader, const char *type)
             std::cout << "Shader successfully linked" << std::endl;
         }
     }
+}
+
+void Shader::deleteShader()
+{
+    glDeleteProgram(mId);
 }

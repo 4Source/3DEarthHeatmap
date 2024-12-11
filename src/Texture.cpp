@@ -5,7 +5,7 @@
 
 Texture::Texture(const char *texturePath, const char *texType, GLuint slot)
 {
-    type = texType;
+    pType = texType;
     int widthImg, heightImg, numColCh;
 
     // Flip image
@@ -18,11 +18,11 @@ Texture::Texture(const char *texturePath, const char *texType, GLuint slot)
     }
 
     // Generate OpenGL texture object
-    glGenTextures(1, &ID); // number of textures, pointer to texture objects
+    glGenTextures(1, &mId); // number of textures, pointer to texture objects
     // Assign the texture to a texture unit
     glActiveTexture(GL_TEXTURE0 + slot);
-    unit = slot;
-    glBindTexture(GL_TEXTURE_2D, ID);
+    mUnit = slot;
+    glBindTexture(GL_TEXTURE_2D, mId);
 
     // Configure the type of algorithm that is used to make the image smaller or bigger
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -64,31 +64,36 @@ Texture::Texture(const char *texturePath, const char *texType, GLuint slot)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::TextureUnit(Shader &shader, const char *uniform, GLuint unit)
+const char *Texture::getType() const
+{
+    return pType;
+}
+
+void Texture::sendTexture(Shader &shader, const char *uniform, GLuint unit)
 {
     // Gets the location of the uniform
-    GLuint texUni = glGetUniformLocation(shader.ID, uniform);
+    GLuint texUni = glGetUniformLocation(shader.getId(), uniform);
     // Shader needs to be activated before changing the value of a uniform
-    shader.Activate();
+    shader.activateShader();
     // Sets the value of the uniform
     glUniform1i(texUni, unit);
 }
 
-void Texture::Bind()
+void Texture::bindTexture()
 {
-    glActiveTexture(GL_TEXTURE0 + unit);
+    glActiveTexture(GL_TEXTURE0 + mUnit);
     // Bind the OpenGL texture object
-    glBindTexture(GL_TEXTURE_2D, ID);
+    glBindTexture(GL_TEXTURE_2D, mId);
 }
 
-void Texture::Unbind()
+void Texture::unbindTexture()
 {
     // Unbind the OpenGL texture object
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::Delete()
+void Texture::deleteTexture()
 {
     // Delete the object
-    glDeleteTextures(1, &ID);
+    glDeleteTextures(1, &mId);
 }

@@ -3,4 +3,4 @@
 #include <sstream>
 #include <iostream>
 
-std::string get_file_contents(const char *filename);
+std::string getFileContents(const char *filename);

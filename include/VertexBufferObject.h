@@ -16,16 +16,16 @@ struct Vertex
 class VertexBufferObject
 {
 protected:
-    GLuint ID;
+    GLuint mId;
 
 public:
     // Constructor that generates the Vertex Buffer Object
     VertexBufferObject(std::vector<Vertex> &vertices);
 
     // Binds the Vertex Buffer Object
-    void Bind();
+    void bindBuffer();
     // Unbinds the Vertex Buffer Object
-    void Unbind();
+    void unbindBuffer();
     // Deletes the Vertex Buffer Object
-    void Delete();
+    void deleteBuffer();
 };

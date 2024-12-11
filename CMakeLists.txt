@@ -86,6 +86,7 @@ add_executable(3DEarthHeatmap
     src/VertexArrayObject.cpp
     src/Texture.cpp
     src/Camera.cpp
+    src/FreeCamera.cpp
     src/Mesh.cpp
     src/Model.cpp
 )

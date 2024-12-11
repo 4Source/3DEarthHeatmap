@@ -7,16 +7,16 @@
 class ElementBufferObject
 {
 protected:
-    GLuint ID;
+    GLuint mId;
 
 public:
     // Constructor that generates the Element Buffer Object
     ElementBufferObject(std::vector<GLuint> &indices);
 
     // Binds the Element Buffer Object
-    void Bind();
+    void bindBuffer();
     // Unbinds the Element Buffer Object
-    void Unbind();
+    void unbindBuffer();
     // Deletes the Element Buffer Object
-    void Delete();
+    void deleteBuffer();
 };

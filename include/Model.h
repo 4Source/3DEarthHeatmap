@@ -16,21 +16,21 @@ class Model
 public:
     Model(const char *gltfFilePath);
 
-    void Draw(Shader &shader, Camera &camera);
+    void drawModel(Shader &shader, Camera &camera);
 
 protected:
-    const char *file;
-    std::vector<unsigned char> data;
-    json jsonObj;
+    const char *pFile;
+    std::vector<unsigned char> mData;
+    json mJsonObj;
 
-    std::vector<Mesh> meshes;
-    std::vector<glm::vec3> translationsMeshes;
-    std::vector<glm::quat> rotationsMeshes;
-    std::vector<glm::vec3> scalesMeshes;
-    std::vector<glm::mat4> matricesMeshes;
+    std::vector<Mesh> mMeshes;
+    std::vector<glm::vec3> mTranslationsMeshes;
+    std::vector<glm::quat> mRotationsMeshes;
+    std::vector<glm::vec3> mScalesMeshes;
+    std::vector<glm::mat4> mMatricesMeshes;
 
-    std::vector<std::string> loadedTexName;
-    std::vector<Texture> loadedTex;
+    std::vector<std::string> mLoadedTexName;
+    std::vector<Texture> mLoadedTex;
 
     void loadMesh(unsigned int indMesh);
 

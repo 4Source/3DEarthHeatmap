@@ -5,17 +5,17 @@ Model::Model(const char *gltfFilePath)
     std::cout << "Loading Model from: " << gltfFilePath << std::endl;
 
     // Read the content of the file
-    std::string text = get_file_contents(gltfFilePath);
+    std::string text = getFileContents(gltfFilePath);
 
     // Parse the text to a json object
-    Model::jsonObj = json::parse(text);
+    Model::mJsonObj = json::parse(text);
 
     // Store the file path for later usage
-    Model::file = gltfFilePath;
+    Model::pFile = gltfFilePath;
 
     // Load the binary data from the .bin
-    Model::data = getData();
-    if (data.size() <= 0)
+    Model::mData = getData();
+    if (mData.size() <= 0)
     {
         throw std::invalid_argument("Model contains no data!");
     }
@@ -24,43 +24,43 @@ Model::Model(const char *gltfFilePath)
     traversNode(0);
 }
 
-void Model::Draw(Shader &shader, Camera &camera)
+void Model::drawModel(Shader &shader, Camera &camera)
 {
     // Draw each mesh in the model with the transformations
-    for (unsigned int i = 0; i < meshes.size(); i++)
+    for (unsigned int i = 0; i < mMeshes.size(); i++)
     {
-        meshes[i].Mesh::Draw(shader, camera, matricesMeshes[i], translationsMeshes[i], rotationsMeshes[i], scalesMeshes[i]);
+        mMeshes[i].Mesh::drawMesh(shader, camera, mMatricesMeshes[i], mTranslationsMeshes[i], mRotationsMeshes[i], mScalesMeshes[i]);
     }
 }
 
 void Model::loadMesh(unsigned int indMesh)
 {
     // Get all accessor indices
-    unsigned int posAccIndices = jsonObj["meshes"][indMesh]["primitives"][0]["attributes"]["POSITION"];
-    unsigned int normalAccIndices = jsonObj["meshes"][indMesh]["primitives"][0]["attributes"]["NORMAL"];
-    unsigned int texAccIndices = jsonObj["meshes"][indMesh]["primitives"][0]["attributes"]["TEXCOORD_0"];
-    unsigned int indicesAccIndices = jsonObj["meshes"][indMesh]["primitives"][0]["indices"];
+    unsigned int posAccIndices = mJsonObj["meshes"][indMesh]["primitives"][0]["attributes"]["POSITION"];
+    unsigned int normalAccIndices = mJsonObj["meshes"][indMesh]["primitives"][0]["attributes"]["NORMAL"];
+    unsigned int texAccIndices = mJsonObj["meshes"][indMesh]["primitives"][0]["attributes"]["TEXCOORD_0"];
+    unsigned int indicesAccIndices = mJsonObj["meshes"][indMesh]["primitives"][0]["indices"];
 
     // Use the accessor indices to get the components of the vertecies
-    std::vector<glm::vec3> positions = groupFloatsVec3(getFloats(jsonObj["accessors"][posAccIndices]));
-    std::vector<glm::vec3> normals = groupFloatsVec3(getFloats(jsonObj["accessors"][normalAccIndices]));
-    std::vector<glm::vec2> texUVs = groupFloatsVec2(getFloats(jsonObj["accessors"][texAccIndices]));
+    std::vector<glm::vec3> positions = groupFloatsVec3(getFloats(mJsonObj["accessors"][posAccIndices]));
+    std::vector<glm::vec3> normals = groupFloatsVec3(getFloats(mJsonObj["accessors"][normalAccIndices]));
+    std::vector<glm::vec2> texUVs = groupFloatsVec2(getFloats(mJsonObj["accessors"][texAccIndices]));
 
     // Combine all the vertex components
     std::vector<Vertex> vertices = assembleVertices(positions, normals, texUVs);
     // Get the indecies by the accassor indice
-    std::vector<GLuint> indices = getIndices(jsonObj["accessors"][indicesAccIndices]);
+    std::vector<GLuint> indices = getIndices(mJsonObj["accessors"][indicesAccIndices]);
     // Get the textures
     std::vector<Texture> textures = getTextures();
 
     // Combine the vertecies, indices and textures into a mesh
-    meshes.push_back(Mesh(vertices, indices, textures));
+    mMeshes.push_back(Mesh(vertices, indices, textures));
 }
 
 void Model::traversNode(unsigned int nextNode, glm::mat4 matrix)
 {
     // Current node
-    json node = jsonObj["nodes"][nextNode];
+    json node = mJsonObj["nodes"][nextNode];
 
     // Get the translation if it exists
     glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -122,10 +122,10 @@ void Model::traversNode(unsigned int nextNode, glm::mat4 matrix)
     if (node.find("mesh") != node.end())
     {
         // Store the transformations
-        translationsMeshes.push_back(translation);
-        rotationsMeshes.push_back(rotation);
-        scalesMeshes.push_back(scale);
-        matricesMeshes.push_back(matNextNode);
+        mTranslationsMeshes.push_back(translation);
+        mRotationsMeshes.push_back(rotation);
+        mScalesMeshes.push_back(scale);
+        mMatricesMeshes.push_back(matNextNode);
 
         // Load the mesh
         loadMesh(node["mesh"]);
@@ -145,14 +145,14 @@ void Model::traversNode(unsigned int nextNode, glm::mat4 matrix)
 std::vector<unsigned char> Model::getData()
 {
     // Get the uri (filename) of the .bin file
-    std::string uri = jsonObj["buffers"][0]["uri"];
+    std::string uri = mJsonObj["buffers"][0]["uri"];
 
     // Make a copy of the file string
-    std::string fileStr = std::string(file);
+    std::string fileStr = std::string(pFile);
     // Cut of the filename and extension
     std::string fileDirectory = fileStr.substr(0, fileStr.find_last_of('/') + 1);
     // Read the raw content of the .bin file
-    std::string bytesText = get_file_contents((fileDirectory + uri).c_str());
+    std::string bytesText = getFileContents((fileDirectory + uri).c_str());
 
     // Transform the raw text data into bytes and put them in a vector
     return std::vector<unsigned char>(bytesText.begin(), bytesText.end());
@@ -169,7 +169,7 @@ std::vector<float> Model::getFloats(json accessor)
     std::string type = accessor["type"];
 
     // Get the properties of the bufferView
-    json bufferView = jsonObj["bufferViews"][buffViewIndices];
+    json bufferView = mJsonObj["bufferViews"][buffViewIndices];
     unsigned int byteOffset = bufferView["byteOffset"];
 
     // Interpret the type
@@ -190,7 +190,7 @@ std::vector<float> Model::getFloats(json accessor)
     unsigned int lengthOfData = count * 4 * numPerVert;
     for (unsigned int i = beginningOfData; i < beginningOfData + lengthOfData; i)
     {
-        unsigned char bytes[] = {data[i++], data[i++], data[i++], data[i++]};
+        unsigned char bytes[] = {mData[i++], mData[i++], mData[i++], mData[i++]};
         float value;
         std::memcpy(&value, bytes, sizeof(float));
         floatVec.push_back(value);
@@ -210,7 +210,7 @@ std::vector<GLuint> Model::getIndices(json accessor)
     unsigned int componentType = accessor["componentType"];
 
     // Get the properties of the bufferView
-    json bufferView = jsonObj["bufferViews"][buffViewIndices];
+    json bufferView = mJsonObj["bufferViews"][buffViewIndices];
     unsigned int byteOffset = bufferView.value("byteOffset", 0);
 
     // Get indices regards to their type:
@@ -220,7 +220,7 @@ std::vector<GLuint> Model::getIndices(json accessor)
     {
         for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 4; i)
         {
-            unsigned char bytes[] = {data[i++], data[i++], data[i++], data[i++]};
+            unsigned char bytes[] = {mData[i++], mData[i++], mData[i++], mData[i++]};
             unsigned int value;
             std::memcpy(&value, bytes, sizeof(unsigned int));
             indices.push_back((GLuint)value);
@@ -231,7 +231,7 @@ std::vector<GLuint> Model::getIndices(json accessor)
     {
         for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 2; i)
         {
-            unsigned char bytes[] = {data[i++], data[i++]};
+            unsigned char bytes[] = {mData[i++], mData[i++]};
             unsigned short value;
             std::memcpy(&value, bytes, sizeof(unsigned short));
             indices.push_back((GLuint)value);
@@ -242,7 +242,7 @@ std::vector<GLuint> Model::getIndices(json accessor)
     {
         for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 2; i)
         {
-            unsigned char bytes[] = {data[i++], data[i++]};
+            unsigned char bytes[] = {mData[i++], mData[i++]};
             short value;
             std::memcpy(&value, bytes, sizeof(short));
             indices.push_back((GLuint)value);
@@ -256,22 +256,22 @@ std::vector<Texture> Model::getTextures()
 {
     std::vector<Texture> textures;
 
-    std::string fileStr = std::string(file);
+    std::string fileStr = std::string(pFile);
     std::string fileDirectory = fileStr.substr(0, fileStr.find_last_of('/') + 1);
 
     // Go over all images
-    for (unsigned int i = 0; i < jsonObj["images"].size(); i++)
+    for (unsigned int i = 0; i < mJsonObj["images"].size(); i++)
     {
         // uri of current texture
-        std::string texPath = jsonObj["images"][i]["uri"];
+        std::string texPath = mJsonObj["images"][i]["uri"];
 
         // Check if the texture has already been loaded
         bool skip = false;
-        for (unsigned int j = 0; j < loadedTexName.size(); j++)
+        for (unsigned int j = 0; j < mLoadedTexName.size(); j++)
         {
-            if (loadedTexName[j] == texPath)
+            if (mLoadedTexName[j] == texPath)
             {
-                textures.push_back(loadedTex[j]);
+                textures.push_back(mLoadedTex[j]);
                 skip = true;
                 break;
             }
@@ -283,18 +283,18 @@ std::vector<Texture> Model::getTextures()
             // Load diffuse texture
             if (texPath.find("baseColor") != std::string::npos)
             {
-                Texture diffuse = Texture((fileDirectory + texPath).c_str(), "diffuse", loadedTex.size());
+                Texture diffuse = Texture((fileDirectory + texPath).c_str(), "diffuse", mLoadedTex.size());
                 textures.push_back(diffuse);
-                loadedTex.push_back(diffuse);
-                loadedTexName.push_back(texPath);
+                mLoadedTex.push_back(diffuse);
+                mLoadedTexName.push_back(texPath);
             }
             // Load specular texture
             else if (texPath.find("metallicRoughness") != std::string::npos)
             {
-                Texture specular = Texture((fileDirectory + texPath).c_str(), "specular", loadedTex.size());
+                Texture specular = Texture((fileDirectory + texPath).c_str(), "specular", mLoadedTex.size());
                 textures.push_back(specular);
-                loadedTex.push_back(specular);
-                loadedTexName.push_back(texPath);
+                mLoadedTex.push_back(specular);
+                mLoadedTexName.push_back(texPath);
             }
         }
     }

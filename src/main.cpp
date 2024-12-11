@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "Shader.h"
+#include "FreeCamera.h"
 #include "Model.h"
 
 GLFWwindow *window;
@@ -21,15 +23,15 @@ int main(int argc, char const *argv[])
         // glm::mat4 lightModel = glm::mat4(1.0f);
         // lightModel = glm::translate(lightModel, lightPos);
 
-        shaderProgram.Activate();
-        glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-        glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+        shaderProgram.activateShader();
+        glUniform4f(glGetUniformLocation(shaderProgram.getId(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+        glUniform3f(glGetUniformLocation(shaderProgram.getId(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
         // Enable Detph testing
         glEnable(GL_DEPTH_TEST);
 
         // Create camera
-        Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+        FreeCamera camera(width, height, glm::vec3(0.0f, 0.0f, 5.0f));
 
         // Load model from file
         Model model("../assets/models/planet_earth/scene.gltf");
@@ -45,33 +47,29 @@ int main(int argc, char const *argv[])
             // Clear the back buffer
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            // Handle camera inputs
-            camera.Inputs(window);
-            // Update camera matrix
-            camera.updateMatrix(45.0f, 0.1f, 100.0f);
+            // Framerate independent movement
+            double currTime = glfwGetTime();
+            if (currTime - prevTime > frameTime)
+            {
+                prevTime = currTime;
 
-            model.Draw(shaderProgram, camera);
+                // Handle camera inputs
+                camera.handleInputs(window);
+                // Update camera matrix
+                camera.updateMatrix(45.0f, 0.1f, 100.0f);
+            }
+
+            model.drawModel(shaderProgram, camera);
 
             // Swap buffers
             glfwSwapBuffers(window);
 
             // Take care of all GLFW events
             glfwPollEvents();
-
-            // Constant frame time
-            double currTime = glfwGetTime();
-            while (currTime - prevTime < frameTime)
-            {
-                currTime = glfwGetTime();
-            }
-            if (currTime - prevTime > frameTime)
-            {
-                prevTime = currTime;
-            }
         }
 
         // Delete the objects
-        shaderProgram.Delete();
+        shaderProgram.deleteShader();
 
         glfwDestroyWindow(window);
         glfwTerminate();
