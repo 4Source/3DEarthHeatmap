@@ -16,7 +16,7 @@ int main(int argc, char const *argv[])
         initializeWindow(width, height);
 
         // Generate the Shader program
-        Shader shaderProgram("../shader/SimpleShader.vertexshader", "../shader/SimpleShader.fragmentshader");
+        Shader shaderProgram("../shader/SimpleShader.vs", "../shader/SimpleShader.fs");
 
         glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
