@@ -18,7 +18,7 @@ public:
 
     void Draw(Shader &shader, Camera &camera);
 
-private:
+protected:
     const char *file;
     std::vector<unsigned char> data;
     json jsonObj;

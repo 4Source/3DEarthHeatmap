@@ -15,10 +15,12 @@ struct Vertex
 
 class VertexBufferObject
 {
-public:
+protected:
     GLuint ID;
+
+public:
     // Constructor that generates the Vertex Buffer Object
-    VertexBufferObject(std::vector<Vertex>& vertices);
+    VertexBufferObject(std::vector<Vertex> &vertices);
 
     // Binds the Vertex Buffer Object
     void Bind();

@@ -6,8 +6,10 @@
 
 class VertexArrayObject
 {
-public:
+protected:
     GLuint ID;
+
+public:
     // Constructor that generates the Vertex Array Object
     VertexArrayObject();
 

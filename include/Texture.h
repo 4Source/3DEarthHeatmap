@@ -7,10 +7,13 @@
 
 class Texture
 {
-public:
+protected:
     GLuint ID;
-    const char *type;
     GLuint unit;
+
+public:
+    const char *type;
+
     // Constructor that loads and generates the texture
     Texture(const char *texturePath, const char *texType, GLuint slot);
 

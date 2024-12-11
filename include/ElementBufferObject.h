@@ -6,10 +6,12 @@
 
 class ElementBufferObject
 {
-public:
+protected:
     GLuint ID;
+
+public:
     // Constructor that generates the Element Buffer Object
-    ElementBufferObject(std::vector<GLuint>& indices);
+    ElementBufferObject(std::vector<GLuint> &indices);
 
     // Binds the Element Buffer Object
     void Bind();
