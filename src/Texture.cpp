@@ -73,10 +73,12 @@ void Texture::sendTexture(Shader &shader, const char *uniform, GLuint unit)
 {
     // Gets the location of the uniform
     GLuint texUni = glGetUniformLocation(shader.getId(), uniform);
+    GLuint texUniEnabled = glGetUniformLocation(shader.getId(), (std::string(uniform) + "enabled").c_str());
     // Shader needs to be activated before changing the value of a uniform
     shader.activateShader();
     // Sets the value of the uniform
     glUniform1i(texUni, unit);
+    glUniform1i(texUniEnabled, true);
 }
 
 void Texture::bindTexture()

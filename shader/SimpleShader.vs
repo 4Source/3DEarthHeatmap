@@ -7,7 +7,7 @@ layout (location = 1) in vec3 aNormal;
 // Colors
 layout (location = 2) in vec3 aColor;
 // Texture Coordinates
-layout (location = 2) in vec2 aTex;
+layout (location = 3) in vec2 aTex;
 
 
 // Outputs the current position for the Fragment Shader
@@ -37,7 +37,7 @@ void main()
 	// Assigns the normal from the Vertex Data to "Normal"
 	Normal = aNormal;
 	// Assigns the colors from the Vertex Data to "color"
-	color = vec3(1.0, 1.0, 1.0);
+	color = aColor;
 	// Assigns the texture coordinates from the Vertex Data to "texCoord"
 	texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
 	
