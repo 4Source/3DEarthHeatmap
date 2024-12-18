@@ -33,6 +33,13 @@ void Model::drawModel(Shader &shader, Camera &camera)
     }
 }
 
+void Model::drawNormals(Shader &shader)
+{
+    for (unsigned int i = 0; i < mMeshes.size(); i++) {
+        mMeshes[i].Mesh::drawNormals(shader, mMatricesMeshes[i], mTranslationsMeshes[i], mRotationsMeshes[i], mScalesMeshes[i]);
+    }
+}
+
 void Model::loadMesh(unsigned int indMesh)
 {
     // Get all accessor indices

@@ -17,6 +17,7 @@ public:
     Model(const char *gltfFilePath);
 
     void drawModel(Shader &shader, Camera &camera);
+    void drawNormals(Shader &shader);
 
 protected:
     const char *pFile;

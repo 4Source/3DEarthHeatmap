@@ -19,6 +19,8 @@ int main(int argc, char const *argv[])
         Shader shaderProgram("../shader/SimpleShader.vs", "../shader/SimpleShader.fs");
 
         // TODO: light model class which could be change position | To rotate the "sun" around the earth
+        // Different light types which specify the light model used in shader
+        // More configuration inputs for shader
         glm::vec4 lightColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
         glm::vec3 lightPos = glm::vec3(50.0f, 50.0f, 50.0f);
         // glm::mat4 lightModel = glm::mat4(1.0f);

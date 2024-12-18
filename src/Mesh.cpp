@@ -79,3 +79,14 @@ void Mesh::drawMesh(Shader &shader, Camera &camera, glm::mat4 matrix, glm::vec3 
     // Draw the Triangles
     glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
 }
+
+void Mesh::drawNormals(Shader &shader, glm::mat4 matrix, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
+{
+    // Activete shader
+    shader.activateShader();
+    // Bind Vertex array object
+    mVAO.bindArray();
+
+    // Draw the Triangles
+    glDrawElements(GL_POINTS, mIndices.size(), GL_UNSIGNED_INT, 0);
+}

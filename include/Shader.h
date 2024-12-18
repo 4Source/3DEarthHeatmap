@@ -15,6 +15,7 @@ private:
 public:
     // Contructor that build the Shaders from file
     Shader(const char *vertexFile, const char *fragmentFile);
+    Shader(const char *vertexFile, const char *fragmentFile, const char *geometryFile);
 
     const GLuint getId() const;
 
