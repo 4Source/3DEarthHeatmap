@@ -35,6 +35,16 @@ Texture &Mesh::getTexture(unsigned int index)
     return mTextures.at(index);
 }
 
+unsigned int Mesh::sizeOfVertices()
+{
+    return mVertices.size();
+}
+
+Vertex &Mesh::getVertex(unsigned int index)
+{
+    return mVertices.at(index);
+}
+
 void Mesh::bindMesh()
 {
     // Bind Vertex array object

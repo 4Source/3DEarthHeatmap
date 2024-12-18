@@ -1,12 +1,14 @@
 #include <iostream>
 
 #include "SimpleShader.h"
+#include "HeightShader.h"
 #include "OrbitalCamera.h"
 #include "Model.h"
 
 GLFWwindow *window;
 
 void initializeWindow(const unsigned int width, const unsigned int height);
+void handleInputs(GLFWwindow *window, unsigned int &shaderType);
 
 int main(int argc, char const *argv[])
 {
@@ -16,19 +18,8 @@ int main(int argc, char const *argv[])
         initializeWindow(width, height);
 
         // Generate the Shader program
-        SimpleShader shaderProgram;
-
-        // TODO: light model class which could be change position | To rotate the "sun" around the earth
-        // Different light types which specify the light model used in shader
-        // More configuration inputs for shader
-        glm::vec4 lightColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
-        glm::vec3 lightPos = glm::vec3(50.0f, 50.0f, 50.0f);
-        // glm::mat4 lightModel = glm::mat4(1.0f);
-        // lightModel = glm::translate(lightModel, lightPos);
-
-        shaderProgram.activateShader();
-        glUniform4f(glGetUniformLocation(shaderProgram.getId(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-        glUniform3f(glGetUniformLocation(shaderProgram.getId(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+        SimpleShader simpleShaderProgram;
+        HeightShader heightShaderProgram;
 
         // Enable Detph testing
         glEnable(GL_DEPTH_TEST);
@@ -41,6 +32,8 @@ int main(int argc, char const *argv[])
 
         double prevTime = glfwGetTime();
         double frameTime = 1.0 / 144;
+
+        unsigned int shaderType = 0;
 
         // Main loop
         while (!glfwWindowShouldClose(window))
@@ -56,13 +49,28 @@ int main(int argc, char const *argv[])
             {
                 prevTime = currTime;
 
+                handleInputs(window, shaderType);
+
                 // Handle camera inputs
                 camera.handleInputs(window);
                 // Update camera matrix
                 camera.updateMatrix(45.0f, 0.1f, 100.0f);
             }
 
-            shaderProgram.drawModel(model, camera);
+            // Use Simple Shader to draw model
+            if (shaderType == 0)
+            {
+                simpleShaderProgram.drawModel(model, camera);
+            }
+            // Use Height Shader to draw model
+            else if (shaderType == 1)
+            {
+                heightShaderProgram.drawModel(model, camera);
+            }
+            else
+            {
+                std::cout << "Unknown Shader type";
+            }
 
             // Swap buffers
             glfwSwapBuffers(window);
@@ -72,7 +80,8 @@ int main(int argc, char const *argv[])
         }
 
         // Delete the objects
-        shaderProgram.deleteShader();
+        simpleShaderProgram.deleteShader();
+        heightShaderProgram.deleteShader();
 
         glfwDestroyWindow(window);
         glfwTerminate();
@@ -122,4 +131,16 @@ void initializeWindow(const unsigned int width, const unsigned int height)
 
     // Set the viewport to the full window
     glViewport(0, 0, width, height);
+}
+
+void handleInputs(GLFWwindow *window, unsigned int &shaderType)
+{
+    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
+    {
+        shaderType = 0;
+    }
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+    {
+        shaderType = 1;
+    }
 }

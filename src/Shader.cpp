@@ -148,14 +148,6 @@ void Shader::deleteShader()
     glDeleteProgram(mId);
 }
 
-void Shader::sendUniform(const char *uniform, glm::mat4 matrix)
-{
-    // Shader needs to be activated before changing the value of a uniform
-    activateShader();
-    // Sets the value of the uniform
-    glUniformMatrix4fv(glGetUniformLocation(getId(), uniform), 1, GL_FALSE, glm::value_ptr(matrix));
-}
-
 void Shader::sendUniform(const char *uniform, GLuint value)
 {
     // Shader needs to be activated before changing the value of a uniform
@@ -170,4 +162,36 @@ void Shader::sendUniform(const char *uniform, bool value)
     activateShader();
     // Sets the value of the uniform
     glUniform1i(glGetUniformLocation(getId(), uniform), value);
+}
+
+void Shader::sendUniform(const char *uniform, GLfloat value)
+{
+    // Shader needs to be activated before changing the value of a uniform
+    activateShader();
+    // Sets the value of the uniform
+    glUniform1f(glGetUniformLocation(getId(), uniform), value);
+}
+
+void Shader::sendUniform(const char *uniform, glm::vec3 vector)
+{
+    // Shader needs to be activated before changing the value of a uniform
+    activateShader();
+    // Sets the value of the uniform
+    glUniform3f(glGetUniformLocation(getId(), uniform), vector.x, vector.y, vector.z);
+}
+
+void Shader::sendUniform(const char *uniform, glm::vec4 vector)
+{
+    // Shader needs to be activated before changing the value of a uniform
+    activateShader();
+    // Sets the value of the uniform
+    glUniform4f(glGetUniformLocation(getId(), uniform), vector.x, vector.y, vector.z, vector.w);
+}
+
+void Shader::sendUniform(const char *uniform, glm::mat4 matrix)
+{
+    // Shader needs to be activated before changing the value of a uniform
+    activateShader();
+    // Sets the value of the uniform
+    glUniformMatrix4fv(glGetUniformLocation(getId(), uniform), 1, GL_FALSE, glm::value_ptr(matrix));
 }

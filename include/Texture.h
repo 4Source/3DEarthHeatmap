@@ -11,10 +11,13 @@ protected:
     GLuint mId;
     GLuint mUnit;
     const char *pType;
+    GLenum target;
 
 public:
     // Constructor that loads and generates the texture
+    Texture() {};
     Texture(const char *texturePath, const char *texType, GLuint slot);
+    Texture(GLubyte colors[], size_t colorsSize, const char *texType, GLuint slot);
 
     const char *getType() const;
 

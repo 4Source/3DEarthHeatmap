@@ -31,9 +31,12 @@ public:
     // Deletes the Shader Program
     void deleteShader();
 
-    void sendUniform(const char *uniform, glm::mat4 matrix);
     void sendUniform(const char *uniform, GLuint value);
     void sendUniform(const char *uniform, bool value);
+    void sendUniform(const char *uniform, GLfloat value);
+    void sendUniform(const char *uniform, glm::vec3 vector);
+    void sendUniform(const char *uniform, glm::vec4 vector);
+    void sendUniform(const char *uniform, glm::mat4 matrix);
 
     virtual void drawModel(Model &model, Camera &camera) = 0;
 };

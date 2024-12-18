@@ -24,6 +24,8 @@ public:
 
     unsigned int sizeOfTextures();
     Texture &getTexture(unsigned int index);
+    unsigned int sizeOfVertices();
+    Vertex& getVertex(unsigned int index);
 
     void bindMesh();
     void drawMesh(GLenum mode);

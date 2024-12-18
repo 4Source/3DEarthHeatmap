@@ -82,6 +82,7 @@ add_executable(3DEarthHeatmap
     src/utils.cpp
     src/Shader.cpp
     src/SimpleShader.cpp
+    src/HeightShader.cpp
     src/VertexBufferObject.cpp
     src/ElementBufferObject.cpp
     src/VertexArrayObject.cpp

@@ -49,6 +49,10 @@ void SimpleShader::drawModel(Model &model, Camera &camera)
         sendUniform("scale", model.getMeshScale(i));
         sendUniform("model", model.getMeshMatrix(i));
 
+        // Export the light informations
+        sendUniform("lightColor", glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+        sendUniform("lightPos", glm::vec3(50.0f, 50.0f, 50.0f));
+
         // Draw the mesh using triangles
         mesh.drawMesh(GL_TRIANGLES);
     }
