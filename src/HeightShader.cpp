@@ -1,6 +1,6 @@
 #include "HeightShader.h"
 
-HeightShader::HeightShader() : HeightShader({29, 72, 119, 255, 251, 176, 33, 255, 246, 136, 56, 255, 238, 62, 50, 255}) {}
+HeightShader::HeightShader() : HeightShader({29, 72, 119, 255, 29, 72, 119, 255, 61, 133, 196, 255, 61, 133, 196, 255, 251, 176, 33, 255, 251, 176, 33, 255, 246, 136, 56, 255, 246, 136, 56, 255, 238, 62, 50, 255, 238, 62, 50, 255, 255, 255, 255, 255}) {}
 
 HeightShader::HeightShader(std::vector<GLubyte> colors) : Shader("../shader/HeightShader.vs", "../shader/HeightShader.fs")
 {
