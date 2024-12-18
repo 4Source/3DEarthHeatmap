@@ -24,20 +24,34 @@ Model::Model(const char *gltfFilePath)
     traversNode(0);
 }
 
-void Model::drawModel(Shader &shader, Camera &camera)
+unsigned int Model::sizeOfMeshes()
 {
-    // Draw each mesh in the model with the transformations
-    for (unsigned int i = 0; i < mMeshes.size(); i++)
-    {
-        mMeshes[i].Mesh::drawMesh(shader, camera, mMatricesMeshes[i], mTranslationsMeshes[i], mRotationsMeshes[i], mScalesMeshes[i]);
-    }
+    return mMeshes.size();
 }
 
-void Model::drawNormals(Shader &shader)
+Mesh &Model::getMesh(unsigned int index)
 {
-    for (unsigned int i = 0; i < mMeshes.size(); i++) {
-        mMeshes[i].Mesh::drawNormals(shader, mMatricesMeshes[i], mTranslationsMeshes[i], mRotationsMeshes[i], mScalesMeshes[i]);
-    }
+    return mMeshes.at(index);
+}
+
+glm::mat4 Model::getMeshTranslation(unsigned int index)
+{
+    return glm::translate(glm::mat4(1.0f), mTranslationsMeshes.at(index));
+}
+
+glm::mat4 Model::getMeshRotation(unsigned int index)
+{
+    return glm::mat4_cast(mRotationsMeshes.at(index));
+}
+
+glm::mat4 Model::getMeshScale(unsigned int index)
+{
+    return glm::scale(glm::mat4(1.0f), mScalesMeshes.at(index));
+}
+
+glm::mat4 Model::getMeshMatrix(unsigned int index)
+{
+    return mMatricesMeshes.at(index);
 }
 
 void Model::loadMesh(unsigned int indMesh)

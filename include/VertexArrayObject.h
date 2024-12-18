@@ -2,6 +2,7 @@
 
 #define GLEW_STATIC
 #include <gl/glew.h>
+
 #include "VertexBufferObject.h"
 
 class VertexArrayObject

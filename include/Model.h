@@ -3,9 +3,16 @@
 #include <single_include/nlohmann/json.hpp>
 #include <vector>
 #include <string>
+#include <iostream>
+#define GLEW_STATIC
+#include <GL/glew.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
-#include "Shader.h"
-#include "Camera.h"
 #include "utils.h"
 #include "Mesh.h"
 
@@ -16,8 +23,12 @@ class Model
 public:
     Model(const char *gltfFilePath);
 
-    void drawModel(Shader &shader, Camera &camera);
-    void drawNormals(Shader &shader);
+    unsigned int sizeOfMeshes();
+    Mesh &getMesh(unsigned int index);
+    glm::mat4 getMeshTranslation(unsigned int index);
+    glm::mat4 getMeshRotation(unsigned int index);
+    glm::mat4 getMeshScale(unsigned int index);
+    glm::mat4 getMeshMatrix(unsigned int index);
 
 protected:
     const char *pFile;

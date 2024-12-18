@@ -4,8 +4,13 @@
 #include <GL/glew.h>
 #include <string>
 #include <iostream>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "utils.h"
+#include "Model.h"
+#include "Camera.h"
 
 class Shader
 {
@@ -25,4 +30,10 @@ public:
     void printCompileErrors(unsigned int shader, const char *type);
     // Deletes the Shader Program
     void deleteShader();
+
+    void sendUniform(const char *uniform, glm::mat4 matrix);
+    void sendUniform(const char *uniform, GLuint value);
+    void sendUniform(const char *uniform, bool value);
+
+    virtual void drawModel(Model &model, Camera &camera) = 0;
 };

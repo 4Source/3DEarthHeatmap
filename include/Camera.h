@@ -10,8 +10,6 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <GLFW/glfw3.h>
 
-#include "Shader.h"
-
 class Camera
 {
 protected:
@@ -26,8 +24,6 @@ public:
 
     // Updates and exports the camera matrix to the Vertex Shader
     virtual void updateMatrix(float FOVdeg, float nearPlane, float farPlane) = 0;
-    // Send the matrix to the shader
-    virtual void sendMatrix(Shader &shader, const char *uniform);
     // Handles camera inputs
     virtual void handleInputs(GLFWwindow *window) = 0;
 };

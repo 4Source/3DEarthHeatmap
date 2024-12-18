@@ -14,9 +14,3 @@ const glm::mat4 Camera::getCameraMatrix() const
 {
     return mCameraMatrix;
 }
-
-void Camera::sendMatrix(Shader &shader, const char *uniform)
-{
-    // Input projection matix to shader
-    glUniformMatrix4fv(glGetUniformLocation(shader.getId(), uniform), 1, GL_FALSE, glm::value_ptr(mCameraMatrix));
-}

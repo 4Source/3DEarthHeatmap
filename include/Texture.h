@@ -2,8 +2,8 @@
 
 #define GLEW_STATIC
 #include <gl/glew.h>
-
-#include "Shader.h"
+#include <string>
+#include <stdexcept>
 
 class Texture
 {
@@ -18,7 +18,6 @@ public:
 
     const char *getType() const;
 
-    void sendTexture(Shader &shader, const char *uniform, GLuint unit);
     // Binds the Texture
     void bindTexture();
     // Unbinds the Texture

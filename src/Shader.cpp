@@ -6,7 +6,7 @@ Shader::Shader(const char *vertexFile, const char *fragmentFile)
     std::cout << "Loading Shader from: \t" << vertexFile << "\n";
     std::string vertexCode = getFileContents(vertexFile);
     const char *vertexSource = vertexCode.c_str();
-    
+
     // Create a Vertex Shader Object
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     // Attach Vertex Shader source to the object
@@ -48,7 +48,7 @@ Shader::Shader(const char *vertexFile, const char *fragmentFile, const char *geo
     std::cout << "Loading Shader from: \t" << vertexFile << "\n";
     std::string vertexCode = getFileContents(vertexFile);
     const char *vertexSource = vertexCode.c_str();
-    
+
     // Create a vertex Shader Object
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     // Attach vertex Shader source to the object
@@ -146,4 +146,28 @@ void Shader::printCompileErrors(unsigned int shader, const char *type)
 void Shader::deleteShader()
 {
     glDeleteProgram(mId);
+}
+
+void Shader::sendUniform(const char *uniform, glm::mat4 matrix)
+{
+    // Shader needs to be activated before changing the value of a uniform
+    activateShader();
+    // Sets the value of the uniform
+    glUniformMatrix4fv(glGetUniformLocation(getId(), uniform), 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void Shader::sendUniform(const char *uniform, GLuint value)
+{
+    // Shader needs to be activated before changing the value of a uniform
+    activateShader();
+    // Sets the value of the uniform
+    glUniform1i(glGetUniformLocation(getId(), uniform), value);
+}
+
+void Shader::sendUniform(const char *uniform, bool value)
+{
+    // Shader needs to be activated before changing the value of a uniform
+    activateShader();
+    // Sets the value of the uniform
+    glUniform1i(glGetUniformLocation(getId(), uniform), value);
 }

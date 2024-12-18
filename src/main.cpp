@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Shader.h"
+#include "SimpleShader.h"
 #include "OrbitalCamera.h"
 #include "Model.h"
 
@@ -16,7 +16,7 @@ int main(int argc, char const *argv[])
         initializeWindow(width, height);
 
         // Generate the Shader program
-        Shader shaderProgram("../shader/SimpleShader.vs", "../shader/SimpleShader.fs");
+        SimpleShader shaderProgram;
 
         // TODO: light model class which could be change position | To rotate the "sun" around the earth
         // Different light types which specify the light model used in shader
@@ -62,7 +62,7 @@ int main(int argc, char const *argv[])
                 camera.updateMatrix(45.0f, 0.1f, 100.0f);
             }
 
-            model.drawModel(shaderProgram, camera);
+            shaderProgram.drawModel(model, camera);
 
             // Swap buffers
             glfwSwapBuffers(window);
