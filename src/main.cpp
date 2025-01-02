@@ -14,7 +14,7 @@ int main(int argc, char const *argv[])
 {
     try
     {
-        const unsigned int width = 1536, height = 1536;
+        const unsigned int width = 1920, height = 1080;
         initializeWindow(width, height);
 
         // Generate the Shader program

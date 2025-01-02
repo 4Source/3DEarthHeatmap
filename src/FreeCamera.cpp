@@ -14,7 +14,7 @@ void FreeCamera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
     view = glm::lookAt(mPosition, mPosition + mOrientation, mUpVec);
 
     // Apply the perspective
-    proj = glm::perspective(glm::radians(FOVdeg), (float)(mWidth / mHeight), nearPlane, farPlane);
+    proj = glm::perspective(glm::radians(FOVdeg), ((float)mWidth / mHeight), nearPlane, farPlane);
 
     mCameraMatrix = proj * view;
 }

@@ -18,7 +18,7 @@ void OrbitalCamera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
     view = glm::lookAt(mPosition, mTargetPosition, mUpVec);
 
     // Apply the perspective
-    proj = glm::perspective(glm::radians(FOVdeg), (float)(mWidth / mHeight), nearPlane, farPlane);
+    proj = glm::perspective(glm::radians(FOVdeg), ((float)mWidth / mHeight), nearPlane, farPlane);
 
     mCameraMatrix = proj * view;
 }
